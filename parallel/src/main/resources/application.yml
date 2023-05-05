@@ -1,0 +1,34 @@
+server:
+  port: ${APP_PORT:8080}
+  shutdown: graceful
+
+spring:
+  application:
+    name: parallel-request
+  main:
+    banner-mode: off
+  codec:
+    max-in-memory-size: ${SPRING_CODEC_MAX_IN_MEMORY_SIZE:16777216}
+
+logging:
+  level:
+    ROOT: ${LOGGING_LEVEL_ROOT:INFO}
+
+
+app:
+  netty:
+    enable: ${NETTY_LOOP_RESOURCE_ENABLE:true}
+    io-worker-count: ${NETTY_LOOP_RESOURCE_WORKER_COUNT:4}
+    io-pool-prefix: ${NETTY_LOOP_RESOURCE_PREFIX:parallel-request}
+  web:
+    url-not-virtual: http://localhost:8081
+    url-sleep: http://localhost:8082
+    url-factorial: http://localhost:8083
+    url-sync: http://localhost:8084
+    max-attempts: ${CORE_BACKEND_MAX_ATTEMPTS:1}
+    min-backoff-ms: ${CORE_BACKEND_MIN_BACKOFF_MS:100}
+    common-timeout-sec: ${CORE_BACKEND_TIMEOUT_SEC:3}
+    paths:
+      sleep: /sleep/{0,number,#}/{1,number,#}
+      recursive: /recursive/{0,number,#}
+      sync: /synchronized/{0,number,#}/{1,number,#}
